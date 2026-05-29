@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Startseite | Karate-Dōjō Freising e.V.</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+
+    <!-- Passwort-Gate (nur Prototyp) -->
+    <div id="pw-gate" aria-modal="true" role="dialog" aria-label="Zugangschutz">
+      <div class="pw-box">
+        <strong>Karate-Dōjō Freising</strong>
+        <p>Prototyp — bitte Passwort eingeben</p>
+        <form id="pw-form" autocomplete="off">
+          <input id="pw-input" type="password" placeholder="Passwort" autofocus>
+          <button type="submit">Weiter</button>
+        </form>
+        <p id="pw-error" hidden>Falsches Passwort</p>
+      </div>
+    </div>
+
+    <div class="layout">
+      <aside class="site-nav" aria-label="Hauptnavigation">
+        <header>
+          <a class="brand" href="index.html"><strong>Karate-Dōjō</strong><span>Freising e.V.</span></a>
+          <button class="menu-toggle" type="button" aria-expanded="false">Menü</button>
+        </header>
+        <nav>
+          <a aria-current="page" href="index.html">Startseite</a>
+          <a href="aktuelles.html">Aktuelles</a>
+          <a href="vereinsleitung.html">Vereinsleitung</a>
+          <a href="kontakt.html">Kontakt</a>
+          <a href="wado-ryu-karate.html">Wadō Ryū Karate</a>
+          <a href="takamura-ha-shindo-yoshin-ryu.html">Takamura ha Shindō Yōshin Ryū</a>
+          <a href="taiji.html">Taiji</a>
+          <a href="kickboxen.html">Kickboxen</a>
+          <a href="trainingsorte.html">Trainingsorte</a>
+          <a href="trainingszeiten.html">Trainingszeiten</a>
+          <a href="trainerschaft.html">Trainerschaft</a>
+          <a href="vereinsgeschichte.html">Vereinsgeschichte</a>
+          <a href="vereinskultur.html">Vereinskultur</a>
+        </nav>
+      </aside>
+      <main>
+        <div class="page-shell">
+          <div class="minimal-home">
+            <header class="page-title home-title">
+              <h1>Karate-Dōjō Freising e.V. seit 1968</h1>
+            </header>
+            <div class="sparten-grid" aria-label="Sparten">
+              <a class="sparte-card" href="wado-ryu-karate.html">
+                <figure><img src="assets/training-placeholder-1.webp" alt="Wadō Ryū Karate"></figure>
+                <div class="sparte-content">
+                  <img class="sparte-logo" src="assets/image3.jpeg" alt="">
+                  <h2>Wadō Ryū Karate</h2>
+                </div>
+              </a>
+              <a class="sparte-card" href="takamura-ha-shindo-yoshin-ryu.html">
+                <figure><img src="assets/training-placeholder-3.webp" alt="Takamura ha Shindō Yōshin Ryū"></figure>
+                <div class="sparte-content">
+                  <img class="sparte-logo" src="assets/image6.png" alt="">
+                  <h2>Takamura ha Shindō Yōshin Ryū</h2>
+                </div>
+              </a>
+              <a class="sparte-card" href="taiji.html">
+                <figure><img src="assets/dojo-light.webp" alt="Taiji"></figure>
+                <div class="sparte-content">
+                  <img class="sparte-logo" src="assets/image1.png" alt="">
+                  <h2>Taiji</h2>
+                </div>
+              </a>
+              <a class="sparte-card" href="kickboxen.html">
+                <figure><img src="assets/training-placeholder-2.webp" alt="Kickboxen"></figure>
+                <div class="sparte-content">
+                  <img class="sparte-logo" src="assets/image7.png" alt="">
+                  <h2>Kickboxen</h2>
+                </div>
+              </a>
+            </div>
+            <div class="sparten-dots" aria-hidden="true">
+              <span class="dot is-active"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
