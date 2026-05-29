@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trainingszeiten | Karate-Dōjō Freising e.V.</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="site-nav" aria-label="Hauptnavigation">
+        <header><a class="brand" href="index.html"><strong>Karate-Dōjō</strong><span>Freising e.V.</span></a><button class="menu-toggle" type="button" aria-expanded="false">Menü</button></header>
+        <nav>
+          <a href="index.html">Startseite</a><a href="aktuelles.html">Aktuelles</a><a href="vereinsleitung.html">Vereinsleitung</a><a href="kontakt.html">Kontakt</a><a href="wado-ryu-karate.html">Wadō Ryū Karate</a><a href="takamura-ha-shindo-yoshin-ryu.html">Takamura ha Shindō Yōshin Ryū</a><a href="taiji.html">Taiji</a><a href="kickboxen.html">Kickboxen</a><a href="trainingsorte.html">Trainingsorte</a><a aria-current="page" href="trainingszeiten.html">Trainingszeiten</a><a href="trainerschaft.html">Trainerschaft</a><a href="vereinsgeschichte.html">Vereinsgeschichte</a><a href="vereinskultur.html">Vereinskultur</a>
+        </nav>
+      </aside>
+      <main>
+        <div class="page-shell">
+          <header class="page-title"><h1>Trainingszeiten</h1></header>
+          <div class="content">
+            <div class="filter-bar" aria-label="Trainingsfilter">
+              <label>Sparte
+                <select id="disciplineFilter">
+                  <option value="all">Alle Sparten</option>
+                  <option>Wadō Ryū Karate</option>
+                  <option>Takamura ha Shindō Yōshin Ryū</option>
+                  <option>Taiji</option>
+                  <option>Kickboxen</option>
+                </select>
+              </label>
+              <label>Gruppe
+                <select id="groupFilter">
+                  <option value="all">Alle Gruppen</option>
+                  <option>Kinder</option>
+                  <option>Jugendliche</option>
+                  <option>Erwachsene</option>
+                  <option>Senioren</option>
+                </select>
+              </label>
+              <label>Ort
+                <select id="locationFilter">
+                  <option value="all">Alle Orte</option>
+                  <option>JoHo Gymnasium</option>
+                  <option>Grundschule St. Korbinian</option>
+                </select>
+              </label>
+            </div>
+            <div class="calendar" id="trainingCalendar" aria-label="Trainingskalender"></div>
+            <p>(H)=Herrenumkleideseite, (D)=Damenumkleideseite, *=nach Osterferien bis Herbstferien, A=Anfänger, F=Fortgeschrittene, VHS=Kurs der Volkshochschule, E=Erwachsene, S=Senioren, J=Jugendliche, K=Kinder.</p>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
