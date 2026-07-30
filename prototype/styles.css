@@ -2212,17 +2212,17 @@ tr:last-child td {
   .history-step {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) minmax(72px, auto);
     grid-template-areas:
       "label year"
       "title title"
       "image image"
       "body body";
-    column-gap: 18px;
+    column-gap: 12px;
     row-gap: 0;
     min-height: auto;
     max-width: 640px;
-    padding: clamp(50px, 12vw, 84px) 0;
+    padding: clamp(52px, 12vw, 84px) 0;
     border-top: 1px solid rgba(23, 22, 20, 0.14);
   }
 
@@ -2234,57 +2234,56 @@ tr:last-child td {
   .history-step::before {
     content: attr(data-year);
     grid-area: year;
-    align-self: end;
+    align-self: baseline;
     justify-self: end;
     display: block;
-    margin: 0 0 12px;
+    margin: 0;
     color: rgba(190, 30, 45, 0.18);
     font-family: 'Outfit', sans-serif;
-    font-size: clamp(42px, 13vw, 64px);
+    font-size: clamp(34px, 9.6vw, 46px);
     font-weight: 760;
-    line-height: 0.88;
+    line-height: 1;
     white-space: nowrap;
   }
 
   .history-step[data-year="Region"]::before,
   .history-step[data-year="Heute"]::before {
-    font-size: clamp(34px, 10vw, 52px);
+    font-size: clamp(28px, 8vw, 38px);
     white-space: normal;
     overflow-wrap: anywhere;
   }
 
   .history-step .eyebrow {
     grid-area: label;
-    align-self: end;
-    margin: 0 0 14px;
+    align-self: baseline;
+    max-width: calc(100vw - 150px);
+    margin: 0;
+    padding-top: 0.42em;
+    font-size: clamp(11px, 3.15vw, 13px);
+    line-height: 1.1;
+    white-space: nowrap;
   }
 
   .history-step h2 {
     grid-area: title;
-    max-width: 11ch;
-    margin: 0 0 18px;
-    font-size: clamp(34px, 9.6vw, 50px);
+    max-width: 100%;
+    margin: 18px 0 20px;
+    font-size: clamp(31px, 8.6vw, 42px);
+    line-height: 0.98;
+    text-wrap: balance;
     overflow-wrap: normal;
     word-break: normal;
-    hyphens: auto;
+    hyphens: manual;
   }
 
   .history-mobile-image {
     grid-area: image;
     display: block;
-    width: calc(100% - clamp(36px, 12vw, 58px) + var(--page-x));
-    min-height: 188px;
+    width: 100%;
+    min-height: 176px;
     aspect-ratio: 16 / 9;
-    margin: 0 calc(-1 * var(--page-x)) 26px clamp(36px, 12vw, 58px);
+    margin: 0 0 24px;
     overflow: hidden;
-    -webkit-mask-image:
-      linear-gradient(to bottom, black 0%, black 82%, transparent 100%),
-      linear-gradient(to right, transparent 0%, black 18%);
-    mask-image:
-      linear-gradient(to bottom, black 0%, black 82%, transparent 100%),
-      linear-gradient(to right, transparent 0%, black 18%);
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
   }
 
   .history-mobile-image img {
@@ -2297,8 +2296,8 @@ tr:last-child td {
 
   .history-step p:not(.eyebrow) {
     grid-area: body;
-    max-width: 28ch;
-    font-size: clamp(18px, 5vw, 22px);
+    max-width: 31ch;
+    font-size: clamp(18px, 4.7vw, 21px);
     line-height: 1.5;
   }
 
