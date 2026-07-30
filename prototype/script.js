@@ -112,7 +112,7 @@ const trainerModalBody = document.querySelector("#trainerModalBody");
 const trainerModalPhoto = document.querySelector("#trainerModalPhoto");
 const trainerModalClose = document.querySelector(".modal-close");
 const trainerFilterButtons = document.querySelectorAll(".trainer-filter-button");
-const trainerProfiles = document.querySelectorAll(".trainer-profile");
+const trainerProfiles = document.querySelectorAll(".trainer-profile, .leader-profile");
 let lastTrainerTrigger = null;
 
 function openTrainerModal(trigger) {
@@ -128,7 +128,7 @@ function openTrainerModal(trigger) {
     img.alt = "";
     trainerModalPhoto.append(img);
   } else {
-    trainerModalPhoto.textContent = trigger.querySelector(".trainer-photo")?.textContent?.trim() || "";
+    trainerModalPhoto.textContent = trigger.querySelector(".trainer-photo, .leader-initials")?.textContent?.trim() || "";
   }
   trainerModal.hidden = false;
   document.body.style.overflow = "hidden";
@@ -235,12 +235,17 @@ if (storyBlocks.length) {
 const historyYear = document.querySelector("#historyYear");
 const historyYearPanel = document.querySelector(".history-year-panel");
 const historySteps = document.querySelectorAll(".history-step[data-year]");
+const historyImages = document.querySelectorAll(".history-image-stack img[data-year]");
 
 if (historyYear && historySteps.length) {
   const setHistoryYear = (year) => {
+    historyYearPanel.classList.toggle("has-word-year", !/^\d+$/.test(year));
     if (historyYear.textContent === year) return;
     historyYearPanel.classList.add("is-changing");
     historyYear.textContent = year;
+    historyImages.forEach((image) => {
+      image.classList.toggle("is-active", image.dataset.year === year);
+    });
     window.setTimeout(() => historyYearPanel.classList.remove("is-changing"), 180);
   };
 
