@@ -2,10 +2,30 @@ const siteNav = document.querySelector(".site-nav");
 const menuToggle = document.querySelector(".menu-toggle");
 
 if (siteNav && menuToggle) {
-  menuToggle.addEventListener("click", () => {
-    const isOpen = siteNav.classList.toggle("is-open");
+  const setMenuOpen = (isOpen) => {
+    siteNav.classList.toggle("is-open", isOpen);
     menuToggle.setAttribute("aria-expanded", String(isOpen));
+    menuToggle.setAttribute("aria-label", isOpen ? "Menü schließen" : "Menü öffnen");
     document.body.style.overflow = isOpen ? "hidden" : "";
+  };
+
+  menuToggle.setAttribute("aria-label", "Menü öffnen");
+
+  menuToggle.addEventListener("click", () => {
+    setMenuOpen(!siteNav.classList.contains("is-open"));
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && siteNav.classList.contains("is-open")) {
+      setMenuOpen(false);
+      menuToggle.focus();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.matchMedia("(min-width: 981px)").matches) {
+      setMenuOpen(false);
+    }
   });
 }
 
@@ -91,6 +111,8 @@ const trainerModalRole = document.querySelector("#trainerModalRole");
 const trainerModalBody = document.querySelector("#trainerModalBody");
 const trainerModalPhoto = document.querySelector("#trainerModalPhoto");
 const trainerModalClose = document.querySelector(".modal-close");
+const trainerFilterButtons = document.querySelectorAll(".trainer-filter-button");
+const trainerProfiles = document.querySelectorAll(".trainer-profile");
 let lastTrainerTrigger = null;
 
 function openTrainerModal(trigger) {
@@ -106,7 +128,7 @@ function openTrainerModal(trigger) {
     img.alt = "";
     trainerModalPhoto.append(img);
   } else {
-    trainerModalPhoto.textContent = "Foto";
+    trainerModalPhoto.textContent = trigger.querySelector(".trainer-photo")?.textContent?.trim() || "";
   }
   trainerModal.hidden = false;
   document.body.style.overflow = "hidden";
@@ -120,7 +142,7 @@ function closeTrainerModal() {
   if (lastTrainerTrigger) lastTrainerTrigger.focus();
 }
 
-document.querySelectorAll(".trainer-profile").forEach((trigger) => {
+trainerProfiles.forEach((trigger) => {
   const photoSlot = trigger.querySelector(".trainer-photo");
   if (trigger.dataset.photo && photoSlot) {
     photoSlot.innerHTML = "";
@@ -131,6 +153,23 @@ document.querySelectorAll(".trainer-profile").forEach((trigger) => {
   }
 
   trigger.addEventListener("click", () => openTrainerModal(trigger));
+});
+
+trainerFilterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const filter = button.dataset.filter;
+
+    trainerFilterButtons.forEach((item) => {
+      const isActive = item === button;
+      item.classList.toggle("is-active", isActive);
+      item.setAttribute("aria-pressed", String(isActive));
+    });
+
+    trainerProfiles.forEach((profile) => {
+      const disciplines = (profile.dataset.discipline || "").split(" ");
+      profile.hidden = filter !== "all" && !disciplines.includes(filter);
+    });
+  });
 });
 
 if (trainerModal) {
