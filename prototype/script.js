@@ -33,19 +33,20 @@ const trainingData = [
   { day: "Mo", time: "18:30-21:00", discipline: "Takamura ha Shindō Yōshin Ryū", location: "JoHo Gymnasium", room: "H*", group: "Erwachsene", level: "Gemeinsam" },
   { day: "Mo", time: "20:00-22:00", discipline: "Wadō Ryū Karate", location: "JoHo Gymnasium", room: "H", group: "Erwachsene", level: "Gemeinsam" },
   { day: "Mo", time: "20:00-22:00", discipline: "Kickboxen", location: "JoHo Gymnasium", room: "D", group: "Erwachsene", level: "Gemeinsam" },
-  { day: "Di", time: "17:30-18:45", discipline: "Wadō Ryū Karate", location: "JoHo Gymnasium", room: "D", group: "Kinder", level: "Fortgeschrittene" },
-  { day: "Di", time: "18:45-22:00", discipline: "Wadō Ryū Karate", location: "JoHo Gymnasium", room: "D", group: "Jugendliche", level: "Gemeinsam" },
-  { day: "Mi", time: "17:00-18:30", discipline: "Wadō Ryū Karate", location: "Grundschule St. Korbinian", room: "", group: "Kinder", level: "Anfänger" },
-  { day: "Mi", time: "19:00-20:30", discipline: "Taiji", location: "Grundschule St. Korbinian", room: "", group: "Erwachsene", level: "VHS-Kurs" },
-  { day: "Mi", time: "19:00-20:30", discipline: "Taiji", location: "Grundschule St. Korbinian", room: "", group: "Erwachsene", level: "Anfänger" },
+  { day: "Di", time: "19:00-20:30", discipline: "Taiji", location: "Grundschule St. Korbinian", room: "", group: "Erwachsene", level: "VHS-Kurs" },
+  { day: "Di", time: "19:00-20:30", discipline: "Taiji", location: "Grundschule St. Korbinian", room: "", group: "Erwachsene", level: "Anfänger" },
+  { day: "Di", time: "20:30-22:00", discipline: "Taiji", location: "Grundschule St. Korbinian", room: "", group: "Erwachsene", level: "Fortgeschrittene" },
+  { day: "Mi", time: "17:30-18:45", discipline: "Wadō Ryū Karate", location: "JoHo Gymnasium", room: "D", group: "Kinder", level: "Fortgeschrittene" },
+  { day: "Mi", time: "18:45-20:00", discipline: "Wadō Ryū Karate", location: "JoHo Gymnasium", room: "D", group: "Jugendliche", level: "Gemeinsam" },
+  { day: "Mi", time: "18:30-21:00", discipline: "Takamura ha Shindō Yōshin Ryū", location: "JoHo Gymnasium", room: "H", group: "Erwachsene", level: "Gemeinsam" },
   { day: "Mi", time: "20:00-22:00", discipline: "Wadō Ryū Karate", location: "JoHo Gymnasium", room: "H", group: "Erwachsene", level: "Gemeinsam" },
   { day: "Mi", time: "20:00-21:30", discipline: "Wadō Ryū Karate", location: "JoHo Gymnasium", room: "H", group: "Senioren", level: "Gemeinsam" },
-  { day: "Mi", time: "20:30-22:00", discipline: "Taiji", location: "Grundschule St. Korbinian", room: "", group: "Erwachsene", level: "Fortgeschrittene" },
-  { day: "Do", time: "18:30-21:00", discipline: "Takamura ha Shindō Yōshin Ryū", location: "JoHo Gymnasium", room: "H", group: "Erwachsene", level: "Gemeinsam" },
-  { day: "Do", time: "20:00-22:00", discipline: "Kickboxen", location: "JoHo Gymnasium", room: "D", group: "Jugendliche", level: "Gemeinsam" },
+  { day: "Do", time: "20:00-22:00", discipline: "Taiji", location: "JoHo Gymnasium", room: "H", group: "Erwachsene", level: "Anfänger + Fortgeschrittene" },
+  { day: "Do", time: "20:00-22:00", discipline: "Kickboxen", location: "JoHo Gymnasium", room: "D", group: ["Erwachsene", "Jugendliche"], level: "Gemeinsam" },
+  { day: "Fr", time: "17:00-18:30", discipline: "Wadō Ryū Karate", location: "Grundschule St. Korbinian", room: "", group: "Kinder", level: "Anfänger" },
+  { day: "Fr", time: "18:30-19:45", discipline: "Wadō Ryū Karate", location: "Grundschule St. Korbinian", room: "", group: "Jugendliche", level: "Gemeinsam" },
   { day: "Fr", time: "18:30-21:00", discipline: "Takamura ha Shindō Yōshin Ryū", location: "Grundschule St. Korbinian", room: "", group: "Erwachsene", level: "Gemeinsam" },
-  { day: "Fr", time: "20:00-22:00", discipline: "Wadō Ryū Karate", location: "JoHo Gymnasium", room: "H", group: "Erwachsene", level: "Gemeinsam" },
-  { day: "Fr", time: "20:00-22:00", discipline: "Taiji", location: "JoHo Gymnasium", room: "H", group: "Erwachsene", level: "Anfänger + Fortgeschrittene" },
+  { day: "Fr", time: "20:00-22:00", discipline: "Wadō Ryū Karate", location: "JoHo Gymnasium", room: "H*", group: "Erwachsene", level: "Gemeinsam" },
 ];
 
 const calendar = document.querySelector("#trainingCalendar");
@@ -54,7 +55,11 @@ const groupFilter = document.querySelector("#groupFilter");
 const locationFilter = document.querySelector("#locationFilter");
 
 function matches(value, selected) {
-  return selected === "all" || value === selected;
+  return selected === "all" || (Array.isArray(value) ? value.includes(selected) : value === selected);
+}
+
+function label(value) {
+  return Array.isArray(value) ? value.join(" + ") : value;
 }
 
 function renderCalendar() {
@@ -88,7 +93,7 @@ function renderCalendar() {
           <span>${item.discipline}</span>
           <span>${item.location}${item.room ? ` (${item.room})` : ""}</span>
           <div class="event-tags">
-            <em>${item.group}</em>
+            <em>${label(item.group)}</em>
             <em>${item.level}</em>
           </div>
         `;
@@ -105,22 +110,110 @@ function renderCalendar() {
 
 renderCalendar();
 
+const cultureSlider = document.querySelector("[data-culture-slider]");
+const cultureSliderPrev = document.querySelector("[data-slider-prev]");
+const cultureSliderNext = document.querySelector("[data-slider-next]");
+
+if (cultureSlider) {
+  const cultureSliderItems = Array.from(cultureSlider.querySelectorAll("figure"));
+  const sliderStep = () => Math.max(cultureSlider.clientWidth * 0.72, 280);
+  const updateCultureSliderControls = () => {
+    const maxScroll = cultureSlider.scrollWidth - cultureSlider.clientWidth - 2;
+    if (cultureSliderPrev) cultureSliderPrev.disabled = cultureSlider.scrollLeft <= 2;
+    if (cultureSliderNext) cultureSliderNext.disabled = cultureSlider.scrollLeft >= maxScroll;
+  };
+
+  cultureSliderPrev?.addEventListener("click", () => {
+    cultureSlider.scrollBy({ left: -sliderStep(), behavior: "smooth" });
+  });
+
+  cultureSliderNext?.addEventListener("click", () => {
+    cultureSlider.scrollBy({ left: sliderStep(), behavior: "smooth" });
+  });
+
+  cultureSlider.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      event.preventDefault();
+      cultureSlider.scrollBy({
+        left: event.key === "ArrowLeft" ? -sliderStep() : sliderStep(),
+        behavior: "smooth"
+      });
+    }
+  });
+
+  cultureSlider.addEventListener("scroll", updateCultureSliderControls, { passive: true });
+  window.addEventListener("resize", updateCultureSliderControls);
+
+  cultureSliderItems.forEach((item) => {
+    item.addEventListener("click", () => {
+      const isActive = item.classList.contains("is-active");
+      cultureSliderItems.forEach((entry) => entry.classList.remove("is-active"));
+      if (!isActive) item.classList.add("is-active");
+    });
+  });
+
+  updateCultureSliderControls();
+}
+
 const trainerModal = document.querySelector("#trainerModal");
 const trainerModalTitle = document.querySelector("#trainerModalTitle");
 const trainerModalRole = document.querySelector("#trainerModalRole");
 const trainerModalBody = document.querySelector("#trainerModalBody");
 const trainerModalPhoto = document.querySelector("#trainerModalPhoto");
+const trainerModalLicenses = document.querySelector("#trainerModalLicenses");
 const trainerModalClose = document.querySelector(".modal-close");
 const trainerFilterButtons = document.querySelectorAll(".trainer-filter-button");
 const trainerProfiles = document.querySelectorAll(".trainer-profile, .leader-profile");
+const qualificationModal = document.querySelector("#qualificationModal");
+const qualificationTrigger = document.querySelector(".qualification-trigger");
+const qualificationModalClose = document.querySelector(".qualification-modal-close");
 let lastTrainerTrigger = null;
+
+function splitLicenseText(text) {
+  return text
+    .replace(/\.$/, "")
+    .split(/,\s+|;\s+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function prepareTrainerBody(html) {
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = html || "";
+  const licenses = [];
+
+  wrapper.querySelectorAll("p").forEach((paragraph) => {
+    const label = paragraph.querySelector("strong")?.textContent || "";
+    if (!/(Graduierung\/Lizenz|Weitere Lizenzen|Lizenzen|Lizenz)/.test(label)) return;
+
+    const clone = paragraph.cloneNode(true);
+    clone.querySelector("strong")?.remove();
+    licenses.push(...splitLicenseText(clone.textContent.trim().replace(/^:/, "").trim()));
+    paragraph.remove();
+  });
+
+  return {
+    body: wrapper.innerHTML,
+    licenses
+  };
+}
 
 function openTrainerModal(trigger) {
   if (!trainerModal) return;
   lastTrainerTrigger = trigger;
+  const prepared = prepareTrainerBody(trigger.dataset.body);
   trainerModalTitle.textContent = trigger.dataset.name;
   trainerModalRole.textContent = trigger.dataset.role;
-  trainerModalBody.innerHTML = trigger.dataset.body;
+  trainerModalBody.innerHTML = prepared.body;
+  if (trainerModalLicenses) {
+    trainerModalLicenses.innerHTML = "";
+    prepared.licenses.forEach((license) => {
+      const item = document.createElement("span");
+      item.textContent = license;
+      trainerModalLicenses.append(item);
+    });
+    trainerModalLicenses.hidden = prepared.licenses.length === 0;
+  }
   trainerModalPhoto.innerHTML = "";
   if (trigger.dataset.photo) {
     const img = document.createElement("img");
@@ -140,6 +233,20 @@ function closeTrainerModal() {
   trainerModal.hidden = true;
   document.body.style.overflow = "";
   if (lastTrainerTrigger) lastTrainerTrigger.focus();
+}
+
+function openQualificationModal() {
+  if (!qualificationModal) return;
+  qualificationModal.hidden = false;
+  document.body.style.overflow = "hidden";
+  qualificationModalClose?.focus();
+}
+
+function closeQualificationModal() {
+  if (!qualificationModal || qualificationModal.hidden) return;
+  qualificationModal.hidden = true;
+  document.body.style.overflow = "";
+  qualificationTrigger?.focus();
 }
 
 trainerProfiles.forEach((trigger) => {
@@ -182,8 +289,25 @@ if (trainerModalClose) {
   trainerModalClose.addEventListener("click", closeTrainerModal);
 }
 
+if (qualificationTrigger) {
+  qualificationTrigger.addEventListener("click", openQualificationModal);
+}
+
+if (qualificationModal) {
+  qualificationModal.addEventListener("click", (event) => {
+    if (event.target === qualificationModal) closeQualificationModal();
+  });
+}
+
+if (qualificationModalClose) {
+  qualificationModalClose.addEventListener("click", closeQualificationModal);
+}
+
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") closeTrainerModal();
+  if (event.key === "Escape") {
+    closeTrainerModal();
+    closeQualificationModal();
+  }
 });
 
 // ── Passwort-Gate (Prototyp) ────────────────────────────────
