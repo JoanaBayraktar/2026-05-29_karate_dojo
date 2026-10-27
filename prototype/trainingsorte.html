@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Trainingsorte | Karate-Dōjō Freising e.V.</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20261027-mitte">
   </head>
   <body>
     <div class="layout">
@@ -16,31 +16,57 @@
       </aside>
       <main>
         <div class="page-shell">
-          <header class="page-title"><h1>Trainingsorte</h1></header>
-          <div class="content">
-            <section class="training-places-hero">
-              <img src="assets/training-places-overview.png" alt="Lagebeschreibung zu den Trainingsorten des Karate-Dōjō Freising">
-              <p>Die Lagebeschreibung zeigt Parkmöglichkeiten, Hallenzugänge und Hinweise zur Orientierung vor Ort. Die Google-Maps-Links sind direkt hinterlegt; QR-Codes können je Trainingsort ergänzt werden.</p>
+          <header class="page-title page-title--plain"><h1>Trainingsorte</h1></header>
+          <div class="content venues">
+            <nav class="venue-overview" aria-label="Trainingsorte im Überblick">
+              <a href="#joho"><strong>Josef-Hofmiller-Gymnasium</strong><span>Jochamstraße 12, 85354 Freising</span></a>
+              <a href="#korbinian"><strong>Korbinian Grundschule</strong><span>Weizengasse 3, 85354 Freising</span></a>
+            </nav>
+            <section class="venue" id="joho" aria-labelledby="joho-title">
+              <header class="venue-heading">
+                <div class="venue-address">
+                  <h2 id="joho-title">Josef-Hofmiller-Gymnasium</h2>
+                  <p>Sporthalle · Jochamstraße 12, 85354 Freising</p>
+                </div>
+                <div class="venue-route">
+                  <a class="button map-location-link" href="https://www.google.com/maps/search/?api=1&query=Jochamstra%C3%9Fe%2012%2C%2085354%20Freising" target="_blank" rel="noopener">Route in Google Maps öffnen</a>
+                  <a class="venue-qr" href="https://www.google.com/maps/search/?api=1&query=Jochamstra%C3%9Fe%2012%2C%2085354%20Freising" target="_blank" rel="noopener"><img src="assets/qr-jochamstrasse-12.svg" alt="QR-Code: Route zur Jochamstraße 12"><span>Route aufs Handy</span></a>
+                </div>
+              </header>
+              <div class="venue-plan">
+                <div class="venue-plan-image venue-plan-image--joho"><img src="assets/map-joho.png" alt="Lageplan mit Sporthalleneingang und Parkplätzen am Josef-Hofmiller-Gymnasium" loading="lazy"></div>
+                <details class="venue-map"><summary>Interaktive Karte anzeigen</summary><iframe title="Karte Josef-Hofmiller-Gymnasium" loading="lazy" src="https://www.google.com/maps?q=Jochamstra%C3%9Fe%2012%2C%2085354%20Freising&output=embed"></iframe></details>
+              </div>
+              <div class="venue-directions">
+                <div><h3>Zur Halle</h3><p>Vom Lehrerparkplatz oder von der Jochamstraße führt eine Treppe hinunter zum Eingang des Turnhallengebäudes. Die Sporthalle liegt im 1. Stock, über dem ehemaligen Hallenbad.</p><p>Im Gebäude die Treppe hinauf: links zur Herren-, rechts zur Damenumkleide. Die Halle ist über beide Umkleideräume zugänglich.</p></div>
+                <div><h3>Parken</h3><p>Der Lehrerparkplatz und die im Lageplan markierten Stellplätze können während der Trainingszeiten kostenlos genutzt werden.</p></div>
+              </div>
             </section>
-            <div class="map-grid">
-              <section class="card map-card">
-                <h2>Sporthalle des Josef-Hofmiller-Gymnasiums</h2>
-                <p>Jochamstraße 12, 85354 Freising</p>
-                <a class="map-location-link" href="https://www.google.com/maps/search/?api=1&query=Jochamstra%C3%9Fe%2012%2C%2085354%20Freising" target="_blank" rel="noopener">In Google Maps öffnen</a>
-                <iframe title="Karte Josef-Hofmiller-Gymnasium" loading="lazy" src="https://www.google.com/maps?q=Jochamstra%C3%9Fe%2012%2C%2085354%20Freising&output=embed"></iframe>
-                <a class="qr-placeholder qr-placeholder--image" href="https://www.google.com/maps/search/?api=1&query=Jochamstra%C3%9Fe%2012%2C%2085354%20Freising" target="_blank" rel="noopener" aria-label="Google Maps für das Josef-Hofmiller-Gymnasium öffnen">
-                  <img src="assets/qr-jochamstrasse-12.svg" alt="QR-Code zu Google Maps für Jochamstraße 12">
-                </a>
-              </section>
-              <section class="card map-card">
-                <h2>Sporthalle der Korbinian Grundschule</h2>
-                <p>Weizengasse 3, 85354 Freising</p>
-                <a class="map-location-link" href="https://www.google.com/maps/search/?api=1&query=Weizengasse%203%2C%2085354%20Freising" target="_blank" rel="noopener">In Google Maps öffnen</a>
-                <iframe title="Karte Korbinian Grundschule" loading="lazy" src="https://www.google.com/maps?q=Weizengasse%203%2C%2085354%20Freising&output=embed"></iframe>
-                <a class="qr-placeholder qr-placeholder--image" href="https://www.google.com/maps/search/?api=1&query=Weizengasse%203%2C%2085354%20Freising" target="_blank" rel="noopener" aria-label="Google Maps für die Korbinian Grundschule öffnen">
-                  <img src="assets/qr-weizengasse-3.svg" alt="QR-Code zu Google Maps für Weizengasse 3">
-                </a>
-              </section>
+            <section class="venue" id="korbinian" aria-labelledby="korbinian-title">
+              <header class="venue-heading">
+                <div class="venue-address">
+                  <h2 id="korbinian-title">Korbinian Grundschule</h2>
+                  <p>Sporthalle · Weizengasse 3, 85354 Freising</p>
+                </div>
+                <div class="venue-route">
+                  <a class="button map-location-link" href="https://www.google.com/maps/search/?api=1&query=Weizengasse%203%2C%2085354%20Freising" target="_blank" rel="noopener">Route in Google Maps öffnen</a>
+                  <a class="venue-qr" href="https://www.google.com/maps/search/?api=1&query=Weizengasse%203%2C%2085354%20Freising" target="_blank" rel="noopener"><img src="assets/qr-weizengasse-3.svg" alt="QR-Code: Route zur Weizengasse 3"><span>Route aufs Handy</span></a>
+                </div>
+              </header>
+              <div class="venue-plan">
+                <div class="venue-plan-image venue-plan-image--korbinian"><img src="assets/map-korbinian.png" alt="Lageplan mit Halleneingang über der Stadtbibliothek und Parkplätzen in Kammergasse und Mainburger Straße" loading="lazy"></div>
+                <details class="venue-map"><summary>Interaktive Karte anzeigen</summary><iframe title="Karte Korbinian Grundschule" loading="lazy" src="https://www.google.com/maps?q=Weizengasse%203%2C%2085354%20Freising&output=embed"></iframe></details>
+              </div>
+              <div class="venue-directions">
+                <div><h3>Zur Halle</h3><p>Die Turnhalle befindet sich über der Stadtbibliothek, neben der Parkgarageneinfahrt der Sparkasse. Von der Straße führt eine Stahltreppe an der Außenseite des Gebäudes hinauf. Die Eingangstür liegt gleich links nach dem Treppenaufgang.</p></div>
+                <div><h3>Parken</h3><p>Die nächsten abends kostenlosen Parkplätze liegen an der Kammergasse 10 und der Mainburger Straße 7. Die Sparkassen-Parkgarage in der Weizengasse ist kostenpflichtig.</p></div>
+              </div>
+            </section>
+            <div class="page-cta">
+              <a class="button" href="trainingszeiten.html">Trainingszeiten</a>
+              <div class="page-links">
+                <a href="kontakt.html">Kontakt</a>
+              </div>
             </div>
           </div>
         </div>

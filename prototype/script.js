@@ -53,6 +53,24 @@ const calendar = document.querySelector("#trainingCalendar");
 const disciplineFilter = document.querySelector("#disciplineFilter");
 const groupFilter = document.querySelector("#groupFilter");
 const locationFilter = document.querySelector("#locationFilter");
+const levelFilter = document.querySelector("#levelFilter");
+const calendarWeekdays = document.querySelector("#calendarWeekdays");
+const trainingResults = document.querySelector("#trainingResults");
+const resetTrainingFilters = document.querySelector("#resetTrainingFilters");
+const trainingFilters = [disciplineFilter, groupFilter, levelFilter, locationFilter];
+const trainingDays = ["Mo", "Di", "Mi", "Do", "Fr"];
+const trainingDayNames = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"];
+let selectedTrainingDay = "Mo";
+
+function selectTrainingDay(day) {
+  selectedTrainingDay = day;
+  calendar?.querySelectorAll(".calendar-day").forEach((panel) => {
+    panel.classList.toggle("is-selected", panel.dataset.day === day);
+  });
+  calendarWeekdays?.querySelectorAll("button").forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.day === day));
+  });
+}
 
 function matches(value, selected) {
   return selected === "all" || (Array.isArray(value) ? value.includes(selected) : value === selected);
@@ -65,25 +83,47 @@ function label(value) {
 function renderCalendar() {
   if (!calendar) return;
 
-  const days = ["Mo", "Di", "Mi", "Do", "Fr"];
+  const days = trainingDays;
   const visible = trainingData.filter((item) => {
     return (
       matches(item.discipline, disciplineFilter.value) &&
       matches(item.group, groupFilter.value) &&
-      matches(item.location, locationFilter.value)
+      matches(item.location, locationFilter.value) &&
+      (levelFilter.value === "all" ||
+        item.level === "Gemeinsam" ||
+        item.level.split(" + ").includes(levelFilter.value))
     );
   });
 
+  if (!visible.some((item) => item.day === selectedTrainingDay) && visible.length) {
+    selectedTrainingDay = days.find((day) => visible.some((item) => item.day === day));
+  }
+  if (trainingResults) trainingResults.textContent = `${visible.length} ${visible.length === 1 ? "Training" : "Trainings"} pro Woche`;
+  if (resetTrainingFilters) resetTrainingFilters.hidden = !trainingFilters.some((filter) => filter.value !== "all");
+  if (calendarWeekdays) calendarWeekdays.innerHTML = "";
+
   calendar.innerHTML = "";
-  days.forEach((day) => {
+  days.forEach((day, index) => {
     const column = document.createElement("section");
     column.className = "calendar-day";
-    const items = visible.filter((item) => item.day === day);
-    column.innerHTML = `<h2>${day}</h2><div class="calendar-items"></div>`;
+    column.dataset.day = day;
+    column.id = `training-day-${index}`;
+    const items = visible.filter((item) => item.day === day).sort((a, b) => a.time.localeCompare(b.time));
+    if (calendarWeekdays) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.day = day;
+      button.setAttribute("aria-controls", column.id);
+      button.setAttribute("aria-label", `${trainingDayNames[index]}, ${items.length} ${items.length === 1 ? "Training" : "Trainings"}`);
+      button.textContent = day;
+      button.addEventListener("click", () => selectTrainingDay(day));
+      calendarWeekdays.append(button);
+    }
+    column.innerHTML = `<h2><span class="calendar-short-day">${day}</span><span class="calendar-full-day">${trainingDayNames[index]}</span></h2><div class="calendar-items"></div>`;
     const list = column.querySelector(".calendar-items");
 
     if (items.length === 0) {
-      list.innerHTML = `<p class="calendar-empty">Keine Einträge</p>`;
+      list.innerHTML = `<p class="calendar-empty">Kein Training für diese Auswahl.</p>`;
     } else {
       items.forEach((item) => {
         const event = document.createElement("article");
@@ -102,10 +142,16 @@ function renderCalendar() {
     }
     calendar.append(column);
   });
+  selectTrainingDay(selectedTrainingDay);
 }
 
-[disciplineFilter, groupFilter, locationFilter].forEach((filter) => {
+trainingFilters.forEach((filter) => {
   if (filter) filter.addEventListener("change", renderCalendar);
+});
+
+resetTrainingFilters?.addEventListener("click", () => {
+  trainingFilters.forEach((filter) => { filter.value = "all"; });
+  renderCalendar();
 });
 
 renderCalendar();
@@ -168,6 +214,9 @@ const qualificationModal = document.querySelector("#qualificationModal");
 const qualificationTrigger = document.querySelector(".qualification-trigger");
 const qualificationModalClose = document.querySelector(".qualification-modal-close");
 let lastTrainerTrigger = null;
+const trainerModalBackground = document.querySelector(".layout");
+let trainerBackgroundWasInert = false;
+let trainerPreviousOverflow = "";
 
 function splitLicenseText(text) {
   return text
@@ -177,25 +226,108 @@ function splitLicenseText(text) {
     .filter(Boolean);
 }
 
+// Teilt Lebenslauf-Text in Stationen: Semikolon oder Komma vor einer Jahreszahl beginnt einen neuen Eintrag.
+function splitTrainerEntries(text) {
+  return text
+    .replace(/\.$/, "")
+    .split(/;\s+|,\s+(?=(?:seit\s+)?\d{4}\b)|\s+und\s+(?=\d{4}\s*[–-]\s*\d{4}|seit\s+\d{4})/)
+    .map((entry) => {
+      const match = entry.trim().match(/^((?:seit\s+)?\d{4}(?:\s*[–-]\s*\d{4})?)\s+(.+)$/);
+      if (!match) return { year: "", text: entry.trim() };
+      const rest = match[2];
+      return { year: match[1].replace(/\s*[–-]\s*/, "–"), text: rest.charAt(0).toUpperCase() + rest.slice(1) };
+    })
+    .filter((entry) => entry.text)
+    // Chronologisch nach Startjahr; Einträge ohne Jahr bleiben vorne.
+    .sort((a, b) => startYear(a) - startYear(b));
+}
+
+function startYear(entry) {
+  const match = entry.year.match(/\d{4}/);
+  return match ? Number(match[0]) : -Infinity;
+}
+
 function prepareTrainerBody(html) {
   const wrapper = document.createElement("div");
   wrapper.innerHTML = html || "";
+  const grades = [];
   const licenses = [];
+  const sections = [];
 
   wrapper.querySelectorAll("p").forEach((paragraph) => {
-    const label = paragraph.querySelector("strong")?.textContent || "";
-    if (!/(Graduierung\/Lizenz|Weitere Lizenzen|Lizenzen|Lizenz)/.test(label)) return;
-
+    const label = (paragraph.querySelector("strong")?.textContent || "").replace(/:\s*$/, "").trim();
     const clone = paragraph.cloneNode(true);
     clone.querySelector("strong")?.remove();
-    licenses.push(...splitLicenseText(clone.textContent.trim().replace(/^:/, "").trim()));
-    paragraph.remove();
+    const text = clone.textContent.trim().replace(/^:/, "").trim();
+
+    if (/Lizenz/.test(label)) {
+      splitLicenseText(text).forEach((item) => {
+        (/\b(Dan|Kyu)\b/.test(item) ? grades : licenses).push(item);
+      });
+      return;
+    }
+
+    sections.push({ label, entries: splitTrainerEntries(text) });
   });
 
-  return {
-    body: wrapper.innerHTML,
-    licenses
-  };
+  return { grades, licenses, sections };
+}
+
+function renderTrainerFacts(prepared) {
+  const fragment = document.createDocumentFragment();
+  [["Graduierung", prepared.grades], ["Lizenzen", prepared.licenses]].forEach(([label, items]) => {
+    if (!items.length) return;
+    const group = document.createElement("div");
+    group.className = "trainer-fact";
+    const heading = document.createElement("h3");
+    heading.textContent = label;
+    const list = document.createElement("ul");
+    items.forEach((item) => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      list.append(li);
+    });
+    group.append(heading, list);
+    fragment.append(group);
+  });
+  return fragment;
+}
+
+function renderTrainerSections(sections) {
+  const fragment = document.createDocumentFragment();
+  sections.forEach(({ label, entries }) => {
+    const section = document.createElement("section");
+    section.className = "trainer-cv-section";
+    const heading = document.createElement("h3");
+    heading.textContent = label;
+    section.append(heading);
+
+    if (entries.length === 1 && !entries[0].year) {
+      const text = document.createElement("p");
+      text.textContent = entries[0].text;
+      section.append(text);
+    } else {
+      const list = document.createElement("ol");
+      const hasYears = entries.some((entry) => entry.year);
+      list.className = hasYears ? "trainer-cv-list has-years" : "trainer-cv-list";
+      entries.forEach(({ year, text }) => {
+        const li = document.createElement("li");
+        const copy = document.createElement("span");
+        copy.textContent = text;
+        if (hasYears) {
+          const time = document.createElement("span");
+          time.className = "trainer-cv-year";
+          time.textContent = year;
+          li.append(time);
+        }
+        li.append(copy);
+        list.append(li);
+      });
+      section.append(list);
+    }
+    fragment.append(section);
+  });
+  return fragment;
 }
 
 function openTrainerModal(trigger) {
@@ -204,15 +336,10 @@ function openTrainerModal(trigger) {
   const prepared = prepareTrainerBody(trigger.dataset.body);
   trainerModalTitle.textContent = trigger.dataset.name;
   trainerModalRole.textContent = trigger.dataset.role;
-  trainerModalBody.innerHTML = prepared.body;
+  trainerModalBody.replaceChildren(renderTrainerSections(prepared.sections));
   if (trainerModalLicenses) {
-    trainerModalLicenses.innerHTML = "";
-    prepared.licenses.forEach((license) => {
-      const item = document.createElement("span");
-      item.textContent = license;
-      trainerModalLicenses.append(item);
-    });
-    trainerModalLicenses.hidden = prepared.licenses.length === 0;
+    trainerModalLicenses.replaceChildren(renderTrainerFacts(prepared));
+    trainerModalLicenses.hidden = prepared.grades.length + prepared.licenses.length === 0;
   }
   trainerModalPhoto.innerHTML = "";
   if (trigger.dataset.photo) {
@@ -224,6 +351,11 @@ function openTrainerModal(trigger) {
     trainerModalPhoto.textContent = trigger.querySelector(".trainer-photo, .leader-initials")?.textContent?.trim() || "";
   }
   trainerModal.hidden = false;
+  trainerPreviousOverflow = document.body.style.overflow;
+  if (trainerModalBackground) {
+    trainerBackgroundWasInert = trainerModalBackground.inert;
+    trainerModalBackground.inert = true;
+  }
   document.body.style.overflow = "hidden";
   trainerModalClose.focus();
 }
@@ -231,7 +363,8 @@ function openTrainerModal(trigger) {
 function closeTrainerModal() {
   if (!trainerModal || trainerModal.hidden) return;
   trainerModal.hidden = true;
-  document.body.style.overflow = "";
+  if (trainerModalBackground) trainerModalBackground.inert = trainerBackgroundWasInert;
+  document.body.style.overflow = trainerPreviousOverflow;
   if (lastTrainerTrigger) lastTrainerTrigger.focus();
 }
 
@@ -276,7 +409,55 @@ trainerFilterButtons.forEach((button) => {
       const disciplines = (profile.dataset.discipline || "").split(" ");
       profile.hidden = filter !== "all" && !disciplines.includes(filter);
     });
+    if (trainerFilterSelect) trainerFilterSelect.value = filter;
   });
+});
+
+// Kopf der Trainerschaft: Porträts laufen in drei Reihen durch, damit alle einmal gut zu sehen sind.
+const trainerMontage = document.querySelector(".trainer-montage");
+if (trainerMontage && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  const portraits = [...trainerMontage.querySelectorAll("img")].map((img) => img.getAttribute("src"));
+  const rows = [[], [], []];
+  portraits.forEach((src, index) => rows[index % 3].push(src));
+  trainerMontage.replaceChildren(...rows.map((sources, rowIndex) => {
+    const row = document.createElement("div");
+    row.className = "montage-row";
+    row.setAttribute("aria-hidden", "true");
+    const track = document.createElement("div");
+    track.className = "montage-track";
+    // Zwei identische Hälften (je Reihe zweimal) für eine nahtlose Schleife.
+    for (let copy = 0; copy < 4; copy += 1) {
+      sources.forEach((src) => {
+        const item = document.createElement("span");
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = "";
+        item.append(img);
+        track.append(item);
+      });
+    }
+    row.style.setProperty("--montage-duration", `${[48, 58, 52][rowIndex]}s`);
+    row.append(track);
+    return row;
+  }));
+  trainerMontage.classList.add("is-moving");
+}
+
+// Desktop: Umschalter zwischen Porträts und Liste; die Wahl bleibt im Browser gespeichert.
+const trainerGrid = document.querySelector(".trainer-grid");
+const trainerViewButtons = document.querySelectorAll(".trainer-view-toggle button");
+function setTrainerView(view) {
+  trainerGrid?.classList.toggle("is-list", view === "list");
+  trainerViewButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
+  try { localStorage.setItem("trainerView", view); } catch {}
+}
+trainerViewButtons.forEach((button) => button.addEventListener("click", () => setTrainerView(button.dataset.view)));
+try { if (trainerGrid && localStorage.getItem("trainerView") === "list") setTrainerView("list"); } catch {}
+
+// Mobile: Dropdown statt Filter-Buttons, steuert dieselben Buttons.
+const trainerFilterSelect = document.querySelector("#trainerFilterSelect");
+trainerFilterSelect?.addEventListener("change", () => {
+  document.querySelector(`.trainer-filter-button[data-filter="${trainerFilterSelect.value}"]`)?.click();
 });
 
 if (trainerModal) {
@@ -304,6 +485,18 @@ if (qualificationModalClose) {
 }
 
 document.addEventListener("keydown", (event) => {
+  if (event.key === "Tab" && trainerModal && !trainerModal.hidden) {
+    const controls = [...trainerModal.querySelectorAll(
+      'a[href], button, input, select, textarea, [tabindex]'
+    )].filter((element) => !element.disabled && element.tabIndex >= 0 && element.getClientRects().length);
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (first && (!trainerModal.contains(document.activeElement) ||
+      (event.shiftKey ? document.activeElement === first : document.activeElement === last))) {
+      event.preventDefault();
+      (event.shiftKey ? last : first).focus();
+    }
+  }
   if (event.key === "Escape") {
     closeTrainerModal();
     closeQualificationModal();
@@ -409,3 +602,16 @@ if (spartenGrid && spartenDots.length) {
   window.addEventListener("resize", updateDots);
   updateDots();
 }
+
+// YouTube erst nach Klick laden, vorher keine Verbindung zu Google
+document.querySelectorAll(".yt-embed[data-youtube]").forEach((embed) => {
+  embed.querySelector(".yt-play")?.addEventListener("click", () => {
+    const iframe = document.createElement("iframe");
+    iframe.src = `https://www.youtube-nocookie.com/embed/${embed.dataset.youtube}?autoplay=1&rel=0`;
+    iframe.title = "Film: Vorführung bei der Kampfsportgala";
+    iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+    iframe.allowFullscreen = true;
+    embed.replaceChildren(iframe);
+    iframe.focus();
+  });
+});

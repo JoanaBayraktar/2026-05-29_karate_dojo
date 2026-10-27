@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Trainingszeiten | Karate-Dōjō Freising e.V.</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20261027-mitte">
   </head>
   <body>
     <div class="layout">
@@ -16,8 +16,8 @@
       </aside>
       <main>
         <div class="page-shell">
-          <header class="page-title page-title--schedule"><h1>Trainingszeiten</h1></header>
-          <div class="content">
+          <header class="page-title page-title--plain page-title--schedule"><h1>Trainingszeiten</h1></header>
+          <div class="content schedule-content">
             <div class="filter-bar" aria-label="Trainingsfilter">
               <label>Sparte
                 <select id="disciplineFilter">
@@ -37,6 +37,13 @@
                   <option>Senioren</option>
                 </select>
               </label>
+              <label>Trainingsstufe
+                <select id="levelFilter">
+                  <option value="all">Alle Stufen</option>
+                  <option>Anfänger</option>
+                  <option>Fortgeschrittene</option>
+                </select>
+              </label>
               <label>Ort
                 <select id="locationFilter">
                   <option value="all">Alle Orte</option>
@@ -45,8 +52,17 @@
                 </select>
               </label>
             </div>
+            <div class="schedule-status">
+              <p id="trainingResults" aria-live="polite" aria-atomic="true"></p>
+              <button type="button" class="schedule-reset" id="resetTrainingFilters" hidden>Filter zurücksetzen</button>
+            </div>
+            <div class="calendar-weekdays" id="calendarWeekdays" role="group" aria-label="Trainingstag auswählen"></div>
             <div class="calendar" id="trainingCalendar" aria-label="Trainingskalender"></div>
-            <p>(H)=Herrenumkleideseite, (D)=Damenumkleideseite, *=nach Osterferien bis Herbstferien, A=Anfänger, F=Fortgeschrittene, VHS=Kurs der Volkshochschule, E=Erwachsene, S=Senioren, J=Jugendliche, K=Kinder.</p>
+            <details class="schedule-notes">
+              <summary>Hallen- und Saisonhinweise</summary>
+              <p>H: Herrenumkleideseite. D: Damenumkleideseite. Der Zugang zur Halle ist über beide Umkleideräume möglich.</p>
+              <p>Mit * markierte Trainings finden am angegebenen Ort nach den Osterferien bis zu den Herbstferien statt.</p>
+            </details>
           </div>
         </div>
       </main>

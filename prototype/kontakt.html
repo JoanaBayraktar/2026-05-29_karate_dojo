@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Kontakt | Karate-Dōjō Freising e.V.</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20261027-mitte">
   </head>
   <body>
     <div class="layout">
@@ -16,25 +16,34 @@
       </aside>
       <main>
         <div class="page-shell">
-          <header class="page-title"><h1>Kontakt</h1></header>
-          <div class="content">
-            <p class="lead">Du möchtest ein Probetraining machen oder hast Fragen zum Verein? Schreib kurz, für welche Sparte du dich interessierst.</p>
-            <form class="form-preview">
-              <label>Name <input type="text" name="name"></label>
-              <label>E-Mail <input type="email" name="email"></label>
-              <label>Interesse
-                <select name="interest">
-                  <option>Wadō Ryū Karate</option>
-                  <option>Takamura ha Shindō Yōshin Ryū</option>
-                  <option>Taiji</option>
-                  <option>Kickboxen</option>
-                  <option>Vereinsleitung / Allgemeines</option>
-                </select>
+          <header class="page-title page-title--plain"><h1>Kontakt</h1></header>
+          <div class="content contact-page">
+            <p class="lead">Du hast eine Frage an den Verein? Schreib uns, wir melden uns bei dir.</p>
+            <!-- Technischer Hinweis: Das echte Formular über Cloudflare Turnstile, Honeypot-Feld und Rate Limiting absichern. -->
+            <form class="form-preview contact-form">
+              <label><span class="field-label">Thema</span>
+                <span class="form-select">
+                  <select name="interest">
+                    <option>Wadō Ryū Karate</option>
+                    <option>Kinder-Karate</option>
+                    <option>Takamura ha Shindō Yōshin Ryū</option>
+                    <option>Taiji &amp; Qigong</option>
+                    <option>Kickboxen</option>
+                    <option>Vereinsleitung / Allgemeines</option>
+                  </select>
+                </span>
               </label>
-              <label>Nachricht <textarea name="message" rows="6"></textarea></label>
-              <button class="button" type="button">Absenden</button>
+              <div class="contact-row">
+                <label><span class="field-label">Name <abbr title="Pflichtfeld">*</abbr></span><input type="text" name="name" autocomplete="name" required></label>
+                <label><span class="field-label">E-Mail <abbr title="Pflichtfeld">*</abbr></span><input type="email" name="email" autocomplete="email" required></label>
+              </div>
+              <label><span class="field-label">Nachricht <abbr title="Pflichtfeld">*</abbr></span><textarea name="message" rows="6" placeholder="z. B. Alter, Vorerfahrung oder an welchem Tag du vorbeikommen möchtest" required></textarea></label>
+              <label class="contact-honeypot" aria-hidden="true">Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+              <div class="contact-submit">
+                <button class="button" type="button">Nachricht senden</button>
+                <p>Deine Angaben nutzen wir nur, um deine Anfrage zu beantworten.</p>
+              </div>
             </form>
-            <p>Technischer Hinweis: Das echte Formular sollte über Cloudflare Turnstile, Honeypot-Feld und Rate Limiting abgesichert werden.</p>
           </div>
         </div>
       </main>
